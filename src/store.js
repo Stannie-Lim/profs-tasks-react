@@ -13,6 +13,13 @@ const reducer = (state = { loading: true, tasks: []}, action)=> {
     const tasks = state.tasks.filter(task => task.id !== action.task.id); 
     state = {...state, tasks };
   }
+  if (action.type === 'EDIT_TASK') {
+    const edittedTasks = state.tasks.map((task) => {
+      if (task.id === action.task.id) return action.task;
+      return task; 
+    });
+    state = {...state, tasks: edittedTasks};
+  }
   return state;
 };
 

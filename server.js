@@ -19,6 +19,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 
+app.use(express.json());
 app.use('/dist', express.static(path.join(__dirname, 'dist')));
 
 app.get('/', (req, res)=> res.sendFile(path.join(__dirname, 'index.html')));
@@ -45,6 +46,7 @@ app.post('/api/tasks', async(req, res, next)=>{
 });
 
 app.put('/api/tasks/:id', async(req, res, next)=>{
+  console.log(req.body);
   try {
     const task = await Task.findByPk(req.params.id);
     await task.update({ complete: req.body.complete});
