@@ -23,3 +23,9 @@ class Header extends React.Component{
 }
 
 export default Header;
+/**
+ * what you will use history object for 
+ * 1. push('some route')- this basically goes to a route
+ * 2. goBack()- this is equivalent to pressing the back button in chrome
+ * 
+ */

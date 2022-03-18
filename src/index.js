@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect, Provider } from 'react-redux';
+import { HashRouter, Route, Switch } from 'react-router-dom';
 
 import Tasks from './Tasks';
 import Header from './Header'
-import Loader from './Loader';
+import SingleUser from './SingleUser';
+import Users from './Users';
 import store, { getUsers, getTasks } from './store';
 
 class App extends React.Component{
@@ -13,11 +15,14 @@ class App extends React.Component{
   }
   render(){
     return (
-      <div>
-        <Header />
-        <Tasks />
-        <Loader />
-      </div>
+      <HashRouter>
+        <Switch>
+          <Route path='/' component={Header} />
+          <Route exact path='/tasks' component={Tasks} />
+          <Route exact path='/users' component={Users} />
+          <Route exact path='/users/:id' component={SingleUser} />
+        </Switch>
+      </HashRouter>
     );
   }
 }

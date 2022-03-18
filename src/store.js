@@ -25,6 +25,8 @@ const tasksReducer = (state = [], action)=> {
 const usersReducer = (state = [], action) => {
   if (action.type === 'SET_USERS') {
     return action.users;
+  } else if (action.type === 'CREATE_USER') {
+    return [...state, action.user];
   }
 
   return state;
@@ -47,7 +49,7 @@ const getTasks = () => {
 
 const getUsers = () => {
   return async dispatch => {
-    const { data } = await axios.get('/api/tasks');
+    const { data } = await axios.get('/api/users');
     dispatch({
       type: 'SET_USERS',
       users: data,
@@ -55,10 +57,21 @@ const getUsers = () => {
   };
 }
 
+const createUser = (name) => {
+  return async dispatch => {
+    const response = await axios.post('/api/users', { name });
+    dispatch({
+      type: 'CREATE_USER',
+      user: response.data,
+    });
+  };
+};
+
 const store = createStore(reducer, applyMiddleware(thunk));
 
 export default store;
 export {
   getTasks,
   getUsers,
+  createUser,
 }

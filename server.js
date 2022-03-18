@@ -76,7 +76,10 @@ app.get('/api/users', async (req, res, next) => {
   res.send(await User.findAll());
 });
 
-
+app.post('/api/users', async (req, res, next) => {
+  const { name } = req.body;
+  res.status(201).send(await User.create({ name }));
+});
 
 const init = async()=> {
   try {
@@ -86,6 +89,10 @@ const init = async()=> {
       Task.generateRandom(),
       Task.generateRandom()
     ]);
+
+    await User.create({ name: 'stanley' });
+    await User.create({ name: 'jianing' });
+    await User.create({ name: 'kenneth' });
 
     const port = process.env.PORT || 3000;
     app.listen(port, ()=> console.log(`listening on port ${port}`));
