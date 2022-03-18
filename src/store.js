@@ -1,28 +1,64 @@
-import { createStore } from 'redux';
+import axios from 'axios';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import thunk from 'redux-thunk';
 
-const reducer = (state = { loading: true, tasks: []}, action)=> {
-  console.log(action);
+const tasksReducer = (state = [], action)=> {
   if(action.type === 'SET_TASKS'){
-    state = {...state, tasks: action.tasks, loading: false};
+    state = action.tasks;
   }
   if(action.type === 'CREATE_TASK'){
-    const tasks = [...state.tasks, action.task];
-    state = {...state, tasks };
+    state = [...state.tasks, action.task];
   }
   if(action.type === 'DESTROY_TASK'){
-    const tasks = state.tasks.filter(task => task.id !== action.task.id); 
-    state = {...state, tasks };
+    state = state.tasks.filter(task => task.id !== action.task.id); 
   }
   if (action.type === 'EDIT_TASK') {
     const edittedTasks = state.tasks.map((task) => {
       if (task.id === action.task.id) return action.task;
       return task; 
     });
-    state = {...state, tasks: edittedTasks};
+    state = edittedTasks;
   }
   return state;
 };
 
-const store = createStore(reducer);
+const usersReducer = (state = [], action) => {
+  if (action.type === 'SET_USERS') {
+    return action.users;
+  }
+
+  return state;
+};
+
+const reducer = combineReducers({
+  tasks: tasksReducer,
+  users: usersReducer,
+});
+
+const getTasks = () => {
+  return async dispatch => {
+    const { data } = await axios.get('/api/tasks');
+    dispatch({
+      type: 'SET_TASKS',
+      tasks: data,
+    });
+  };
+};
+
+const getUsers = () => {
+  return async dispatch => {
+    const { data } = await axios.get('/api/tasks');
+    dispatch({
+      type: 'SET_USERS',
+      users: data,
+    });
+  };
+}
+
+const store = createStore(reducer, applyMiddleware(thunk));
 
 export default store;
+export {
+  getTasks,
+  getUsers,
+}

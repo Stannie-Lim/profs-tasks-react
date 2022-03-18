@@ -1,15 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import axios from 'axios';
+import { connect, Provider } from 'react-redux';
+
 import Tasks from './Tasks';
 import Header from './Header'
 import Loader from './Loader';
-import store from './store';
+import store, { getUsers, getTasks } from './store';
 
 class App extends React.Component{
   async componentDidMount(){
-    const response = await axios.get('/api/tasks');
-    store.dispatch({ type: 'SET_TASKS', tasks: response.data});
+    this.props.load();
   }
   render(){
     return (
@@ -21,5 +21,22 @@ class App extends React.Component{
     );
   }
 }
+
+const mapDispatch = (dispatch) => {
+  return {
+    load: () => {
+      dispatch(getUsers());
+      dispatch(getTasks());
+    },
+  };
+};
+
+const ConnectedApp = connect(null, mapDispatch)(App);
+
 const root = document.querySelector('#root');
-ReactDOM.render(<App />, root);
+ReactDOM.render(
+  <Provider store={store}>
+    <ConnectedApp />
+  </Provider>, 
+  root
+);

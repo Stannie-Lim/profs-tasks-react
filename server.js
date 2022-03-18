@@ -2,14 +2,19 @@ const Sequelize = require('sequelize');
 const sequelize = new Sequelize(process.env.DATABASE_URL || 'postgres://localhost/profs_task_db');
 
 const Task = sequelize.define('task', {
-  name: {
-    type: Sequelize.STRING
-  },
+  name: Sequelize.STRING,
   complete: {
     type: Sequelize.BOOLEAN,
     defaultValue: false
   }
 });
+
+const User = sequelize.define('user', {
+  name: Sequelize.STRING,
+});
+
+User.hasMany(Task);
+Task.belongsTo(User);
 
 Task.generateRandom = function(){
   return this.create({ name: `Task Number ${ Math.floor(Math.random()*5000)}`});
@@ -46,7 +51,6 @@ app.post('/api/tasks', async(req, res, next)=>{
 });
 
 app.put('/api/tasks/:id', async(req, res, next)=>{
-  console.log(req.body);
   try {
     const task = await Task.findByPk(req.params.id);
     await task.update({ complete: req.body.complete});
@@ -67,6 +71,11 @@ app.get('/api/tasks', async(req, res, next)=>{
     next(ex);
   }
 });
+
+app.get('/api/users', async (req, res, next) => {
+  res.send(await User.findAll());
+});
+
 
 
 const init = async()=> {
